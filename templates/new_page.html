@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Page</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <a href="{{ url_for('superhome') }}">Back to Home</a>
+  <h4>あなたは {{ nickname }} </h4>
+  <h1 class="red-text">新しいCategoryを追加</h1>
+  <form method="POST">
+    <label for="title">Category Title</label>
+    <input type="text" id="title" name="title" required>
+    <input type="submit" value="Create Category">
+  </form>
+</body>
+</html>
+

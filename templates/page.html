@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Category</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <a href="{{ url_for('superhome') }}">Back to Home</a>
+  <h4>あなたは {{ nickname }} </h4>
+  <h1 class="red-text">Category ID: {{ page.id }}</h1>
+  <h1 class="blue-text">Category Title: {{ page.title }}</h1>
+  <div>
+    {% if category_change_true_false %}
+      <form method="POST">
+        <label for="category_title">Category Title Change</label>
+        <input type="text" id="category_title" name="category_title" value="" required>
+        <input type="submit" value="Category Title Change">
+      </form>
+    {% endif %}
+  </div>
+  <ul>
+    {% for thread in threads %}
+      <li>
+        <a href="{{ url_for('view_thread', page_id=page.id, thread_id=thread.id) }}">{{ thread.id }} : {{ thread.title }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <div>
+    {% if category_change_true_false %}
+      <form method="POST">
+        <label for="delete_thread">Delete Thread</label>
+        <input type="text" id="delete_thread" name="delete_thread" value="" required>
+        <input type="submit" value="Delete Thread">
+      </form>
+    {% endif %}
+  </div>
+  <h4>{{ only_me_new_thread | safe }} </h4>
+</body>
+</html>
