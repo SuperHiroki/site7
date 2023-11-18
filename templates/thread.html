@@ -2,46 +2,62 @@
 <html>
 <head>
   <title>Blog</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
 </head>
-<body>
-  <a href="{{ url_for('page', page_id=page_id) }}">Back to Category</a>
-  <h4>あなたは {{ nickname }} </h4>
-  <!--現在までのBlogの中身を表示-->
-  <h1 class="red-text">ブログID : {{ thread.id }}</h1>
-  <h1 class="blue-text">ブログタイトル : {{ thread.title }}</h1>
-  <div>
-    {{me_input_place | safe}}
+<body class="bg-gray-100 text-gray-800 font-sans p-4">
+  <div class="container mx-auto p-4 max-w-3xl">
+    <div class="mb-4">
+      <a href="{{ url_for('page', page_id=page_id) }}" class="text-blue-500 hover:text-blue-700">Back to Category</a>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-4">
+      <h4 class="text-lg mb-2">あなたは {{ nickname }}</h4>
+      <h1 class="text-xl mb-4 px-4 py-4 font-bold shadow-lg">ブログID : <span class="text-4xl font-extrabold text-red-800">{{ thread.id }}</span></h1>
+      <h1 class="text-xl mb-4 px-4 py-4 font-bold shadow-lg">ブログタイトル : <span class="text-4xl font-extrabold text-blue-800">{{ thread.title }}</span></h1>
+
+      <div class="mt-4 mb-4">
+        {{ me_input_place | safe }}
+      </div>
+      <div class="mt-4 mb-4">
+        <div class="reset">
+          {{ me_blog_before | safe }}
+        </div>
+      </div>
+
+      <hr class="my-6 border-gray-300">
+
+      <h1 class="text-2xl font-bold text-green-500 mb-4">コメント</h1>
+      <ul class="list-disc list-inside">
+        {% for post, nickname in posts_with_nicknames %}
+          <div class="mb-2">
+            <p>コメントID: {{ post.id }} / 時間: {{ post.time }} / ニックネーム: {{ nickname }} ＞<br> {{ post.content | safe }}</p>
+          </div>
+        {% endfor %}
+      </ul>
+
+      <form method="POST" class="space-y-4 mt-4">
+        <div>
+          <label for="comment" class="block text-sm font-medium text-gray-700">Create Comment</label>
+          <textarea id="comment" name="comment" rows="10" required class="mt-1 p-3 border border-gray-300 rounded-md w-full"></textarea>
+        </div>
+        <div>
+          <input type="submit" value="Create Comment" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition">
+        </div>
+      </form>
+
+      <form method="POST" class="space-y-4 mt-4">
+        <div>
+          <label for="delete_comment" class="block text-sm font-medium text-gray-700">Delete Comment（削除したいコメントIDを記入してください）<br>※自分のコメントのみ削除できます</label>
+          <input type="text" id="delete_comment" name="delete_comment" required class="mt-1 px-3 py-2 border border-gray-300 rounded-md w-full">
+        </div>
+        <div>
+          <input type="submit" value="Delete Comment" class="w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition">
+        </div>
+      </form>
+      <p class="text-red-500 mt-4">{{ massage_for_delete }}</p>
+    </div>
   </div>
-  <div>
-    {{me_blog_before | safe}}
-  </div>
-  <!--コメント-->
-  <p>=====================================================================================================================</p>
-  <h1 class="green-text">コメント</h1>
-  <ul>
-    {% for post, nickname in posts_with_nicknames %}
-      <li>
-        <p>コメントID: {{ post.id }} / 時間: {{ post.time }} / ニックネーム: {{ nickname }} ＞<br> {{ post.content | safe }}</p>
-      </li>
-    {% endfor %}
-  </ul>
-  <!--このBlogに対して新しくPOSTする-->
-  <form method="POST">
-    <label for="comment">Create Comment</label>
-    <textarea id="comment" class="comment_form" name="comment" rows="10" required></textarea>
-    <br>
-    <input type="submit" value="Create Comment">
-  </form>
-  <br>
-  <br>
-  <form method="POST">
-    <label for="delete_comment">Delete Comment（削除したいコメントIDを記入してください）<br>※自分のコメントのみ削除できます</label><br>
-    <input type="text" id="delete_comment" name="delete_comment" required>
-    <br>
-    <input type="submit" value="Delete Comment">
-  </form>
-  <p class="red-text">{{ massage_for_delete }}</p>
 </body>
 </html>
-

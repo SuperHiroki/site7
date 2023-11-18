@@ -2,38 +2,55 @@
 <html>
 <head>
   <title>Category</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-  <a href="{{ url_for('superhome') }}">Back to Home</a>
-  <h4>あなたは {{ nickname }} </h4>
-  <h1 class="red-text">Category ID: {{ page.id }}</h1>
-  <h1 class="blue-text">Category Title: {{ page.title }}</h1>
-  <div>
-    {% if category_change_true_false %}
-      <form method="POST">
-        <label for="category_title">Category Title Change</label>
-        <input type="text" id="category_title" name="category_title" value="" required>
-        <input type="submit" value="Category Title Change">
-      </form>
-    {% endif %}
+<body class="bg-gray-100 text-gray-800 font-sans p-4">
+  <div class="container mx-auto p-4 max-w-2xl">
+    <div class="mb-4">
+      <a href="{{ url_for('superhome') }}" class="text-blue-500 hover:text-blue-700">Back to Home</a>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-4">
+      <h4 class="mb-3 font-bold text-gray-700">あなたは {{ nickname }}</h4>
+      <h1 class="text-xl mb-4 px-4 py-4 font-bold shadow-lg">Category ID: <span class="text-4xl font-extrabold text-red-800">{{ page.id }}</span></h1>
+      <h1 class="text-xl mb-4 px-4 py-4 font-bold shadow-lg">Category Title: <span class="text-4xl font-extrabold text-blue-800">{{ page.title }}</span></h1>      
+
+      {% if category_change_true_false %}
+        <form method="POST" class="space-y-4 mt-4">
+          <div>
+            <label for="category_title" class="block text-sm font-medium text-gray-700">Category Title Change</label>
+            <input type="text" id="category_title" name="category_title" required class="mt-1 px-3 py-2 border border-gray-300 rounded-md w-full">
+          </div>
+          <div>
+            <input type="submit" value="Category Title Change" class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition">
+          </div>
+        </form>
+      {% endif %}
+
+      <ul class="list-disc list-inside mt-6">
+        {% for thread in threads %}
+          <a href="{{ url_for('view_thread', page_id=page.id, thread_id=thread.id) }}" class="block bg-gray-500 text-white text-center font-bold py-3 px-6 my-4 rounded hover:bg-gray-700 transition duration-300 ease-in-out">{{ thread.id }} : {{ thread.title }}</a>
+        {% endfor %}
+      </ul>
+
+      {% if category_change_true_false %}
+        <form method="POST" class="space-y-4 mt-4">
+          <div>
+            <label for="delete_thread" class="block text-sm font-medium text-gray-700">Delete Thread</label>
+            <input type="text" id="delete_thread" name="delete_thread" required class="mt-1 px-3 py-2 border border-gray-300 rounded-md w-full">
+          </div>
+          <div>
+            <input type="submit" value="Delete Thread" class="w-full bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600 transition">
+          </div>
+        </form>
+      {% endif %}
+      {% if only_me_new_thread %}
+        <a href="{{ url_for('new_thread', page_id=page_id) }}" class="mt-8 inline-block bg-green-500 text-white font-semibold py-2 px-4 rounded hover:bg-green-600 transition">New Thread</a>
+      {% endif %}
+    </div>
+
+    <!--<h4 class="mt-8">{{ only_me_new_thread | safe }} </h4>-->
   </div>
-  <ul>
-    {% for thread in threads %}
-      <li>
-        <a href="{{ url_for('view_thread', page_id=page.id, thread_id=thread.id) }}">{{ thread.id }} : {{ thread.title }}</a>
-      </li>
-    {% endfor %}
-  </ul>
-  <div>
-    {% if category_change_true_false %}
-      <form method="POST">
-        <label for="delete_thread">Delete Thread</label>
-        <input type="text" id="delete_thread" name="delete_thread" value="" required>
-        <input type="submit" value="Delete Thread">
-      </form>
-    {% endif %}
-  </div>
-  <h4>{{ only_me_new_thread | safe }} </h4>
 </body>
 </html>
